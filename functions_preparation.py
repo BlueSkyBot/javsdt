@@ -1,10 +1,11 @@
 # -*- coding:utf-8 -*-
 from os import sep, system
-from os.path import exists
+from os.path import exists, isdir
 from re import search
 from time import sleep, strftime, localtime, time
-from tkinter import filedialog, Tk
+from tkinter import filedialog, Tk, TclError
 from shutil import copyfile
+import sys
 
 
 # 每一部jav的“结构体”
@@ -22,17 +23,30 @@ class JavFile(object):
 # 返回：路径str
 # 辅助：tkinter.Tk，tkinter.filedialog，os.sep
 def choose_directory():
-    directory_root = Tk()
-    directory_root.withdraw()
-    path_work = filedialog.askdirectory()
-    if path_work == '':
-        print('你没有选择目录! 请重新选：')
-        sleep(2)
-        return choose_directory()
-    else:
-        # askdirectory 获得是 正斜杠 路径C:/，所以下面要把 / 换成 反斜杠\
-        return path_work.replace('/', sep)
+    try:
+        directory_root = Tk()
+        directory_root.withdraw()
+        path_work = filedialog.askdirectory()
+        if path_work == '':
+            print('你没有选择目录! 请重新选：')
+            sleep(2)
+            return choose_directory()
+        else:
+            # askdirectory 获得是 正斜杠 路径C:/，所以下面要把 / 换成 反斜杠\
+            return path_work.replace('/', sep)
+    except TclError:
+        try:
+            path_work = input("Please enter the path of your directory: ")
+        except KeyboardInterrupt:
+            sys.exit('Keyboard Interrupt detected. Exit now')
 
+        if not exists(path_work) or not isdir(path_work):
+            print('\"{0}\" does not exist or is not a valid directory. Try again.'.format(path_work))
+            sleep(2)
+            return choose_directory()
+        return path_work
+    except:
+        raise
 
 # 功能：检查 归类根目录 的合法性
 # 参数：用户自定义的归类根目录，用户选择整理的文件夹路径

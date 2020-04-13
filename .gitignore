@@ -111,3 +111,9 @@ venv.bak/
 
 # IDE files
 .vscode/
+
+# Log and Configs
+【记得清理它】警告信息.txt
+【记得清理它】新旧文件名清单.txt
+【记得清理它】失败记录.txt
+【点我设置整理规则】.ini
